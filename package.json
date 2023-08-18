@@ -1,0 +1,16 @@
+{
+    "name": "mmm-birdnet",
+    "version": "0.1.0",
+    "description": "A display of local hits for the BirdNET mobile app. https://birdnet.cornell.edu",
+    "main": "MMM-BirdNET.js",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/BrianHepler/MMM-BirdNET.git"
+    },
+    "author": "brian.hepler@verizon.net",
+    "license": "MIT",
+    "bugs": {
+      "url": "https://github.com/BrianHepler/MMM-BirdNET/issues"
+    },
+    "homepage": "https://github.com/BrianHepler/MMM-BirdNET#readme"
+  }
