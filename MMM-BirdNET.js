@@ -3,12 +3,13 @@ Module.register("MMM-BirdNET", {
         updateInterval: 60 * 60 * 1000, // one hour
         popInterval: 30 * 1000, // thirty seconds
         dataUrl: 'https://birdnet.cornell.edu/map/requeststats',
+        mapUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
         mapMode: 'dark',
-        lat: 51.505,
-        lon: -0.09,
+        lat: 42.453583743,
+		lon: -76.47363144,
         width: '400px',
         height: '400px',
-        zoomLevel: 7,
+        zoomLevel: 7
     },
   
     start: function () {
