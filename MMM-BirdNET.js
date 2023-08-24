@@ -3,7 +3,6 @@ Module.register("MMM-BirdNET", {
         updateInterval: 60 * 60 * 1000, // one hour
         popInterval: 30 * 1000, // thirty seconds
         dataUrl: 'https://birdnet.cornell.edu/map/requeststats',
-        mapUrl: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}',
         mapMode: 'dark',
         lat: 51.505,
         lon: -0.09,
@@ -18,6 +17,7 @@ Module.register("MMM-BirdNET", {
         }, this.config.updateInterval);
         Log.info("Starting module " + this.name);
 
+        // one map to rule them all
         this.mapWrapper = null;
 
         this.config.animationSpeed = 1000;
@@ -36,28 +36,8 @@ Module.register("MMM-BirdNET", {
             doubleClickZoom: false
         }
 
-        switch (this.config.mapMode) {
-            case 'grey': 
-                this.config.mapUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}';
-                break;
-            case 'dark':
-                this.config.mapUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
-                break;
-            case 'light': 
-                this.config.mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
-                break;
-            case 'stark':
-                this.config.mapUrl = 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.{ext}';
-                break;
-            case 'terrain': 
-                this.config.mapUrl = 'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.{ext}';
-                break;
-            case 'metal':
-                this.config.mapUrl = 'https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png';
-                break;
-            case 'custom':
-                // no action. Load url from mapUrl variable
-        } // end case statement
+        this.mapSelector = "Jawg.Dark";
+        
 
 
         if (this.config.mapMode == 'dark') { 
@@ -198,7 +178,6 @@ Module.register("MMM-BirdNET", {
         var markerArray = markers.getLayers();
         var index = Math.floor(Math.random() * markerArray.length);
 
-        Log.info("pop");
         markerArray[index].openPopup();
     },
 
@@ -223,7 +202,33 @@ Module.register("MMM-BirdNET", {
         } else {
             var map = L.map('BirdNET-map', this.mapOptions);
             map.setView([this.config.lat, this.config.lon],this.config.zoomLevel); // create the map
-            L.tileLayer(this.config.mapUrl, {maxZoom: 19, attribution: 'OpenStreetMap'}).addTo(map); // add map tiles
+
+            switch (this.config.mapMode) {
+                case 'light': 
+                    L.tileLayer.provider('CartoDB.Positron',{maxZoom: 19}).addTo(map);
+                    break;
+                case 'dark':
+                    L.tileLayer.provider('CartoDB.DarkMatter',{maxZoom:19}).addTo(map);
+                    break;
+                case 'atlas': 
+                    L.tileLayer.provider('OpenStreetMap.Mapnik',{maxZoom:19}).addTo(map);
+                    break;
+                case 'stark':
+                    L.tileLayer.provider('Thunderforest.MobileAtlas',{apikey: '74ede731b29042d6aea1f834ad451250',maxZoom:19}).addTo(map);
+                    break;
+                case 'terrain': 
+                    L.tileLayer.provider('GeoportailFrance.orthos',{maxZoom: 19}).addTo(map);
+                    break;
+                case 'metal':
+                    L.tileLayer.provider('Thunderforest.SpinalMap', {apikey: '74ede731b29042d6aea1f834ad451250',maxZoom:19}).addTo(map);
+                    break;
+                case 'satellite':
+                    L.tileLayer.provider('USGS.USImageryTopo',{maxZoom: 19}).addTo(map);
+                    break;
+                case 'custom':
+                    L.tileLayer(this.config.mapUrl, {maxZoom: 19, attribution: 'Unknown'}).addTo(map); // add map tiles
+            } // end case statement
+
             this.birdMap = map;
         }
 
@@ -237,7 +242,7 @@ Module.register("MMM-BirdNET", {
     },
 
     getScripts: function() {
-        return [this.file('leaflet/leaflet-src.js'),this.file('label_data_icons.js')];
+        return [this.file('leaflet/leaflet-src.js'),this.file('label_data_icons.js'),this.file('leaflet/leaflet-providers.js')];
     },
     
     getStyles: function() {
