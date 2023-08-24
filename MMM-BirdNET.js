@@ -3,7 +3,8 @@ Module.register("MMM-BirdNET", {
         updateInterval: 60 * 60 * 1000, // one hour
         popInterval: 30 * 1000, // thirty seconds
         dataUrl: 'https://birdnet.cornell.edu/map/requeststats',
-        mapUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        mapUrl: 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}',
+        mapMode: 'dark',
         lat: 51.505,
         lon: -0.09,
         width: '400px',
@@ -16,6 +17,8 @@ Module.register("MMM-BirdNET", {
             this.updateData();
         }, this.config.updateInterval);
         Log.info("Starting module " + this.name);
+
+        this.mapWrapper = null;
 
         this.config.animationSpeed = 1000;
         this.imageUrl = "https://birdnet.cornell.edu/map/static/img/150px_crops3K/";
@@ -33,6 +36,35 @@ Module.register("MMM-BirdNET", {
             doubleClickZoom: false
         }
 
+        switch (this.config.mapMode) {
+            case 'grey': 
+                this.config.mapUrl = 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.{ext}';
+                break;
+            case 'dark':
+                this.config.mapUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+                break;
+            case 'light': 
+                this.config.mapUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+                break;
+            case 'stark':
+                this.config.mapUrl = 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.{ext}';
+                break;
+            case 'terrain': 
+                this.config.mapUrl = 'https://tiles.stadiamaps.com/tiles/stamen_terrain/{z}/{x}/{y}{r}.{ext}';
+                break;
+            case 'metal':
+                this.config.mapUrl = 'https://{s}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png';
+                break;
+            case 'custom':
+                // no action. Load url from mapUrl variable
+        } // end case statement
+
+
+        if (this.config.mapMode == 'dark') { 
+        } else {
+
+        }
+
         this.loaded = false;
     },
 
@@ -47,16 +79,22 @@ Module.register("MMM-BirdNET", {
     },
 
     getDom: function() {
-        var wrapper = document.createElement("div");
-        wrapper.className = "BirdNETmap";
-        wrapper.id = "BirdNET-map";
+        var wrapper;
+        if (this.mapWrapper != null) {
+            wrapper = this.mapWrapper;
+        } else {
+            wrapper = document.createElement("div");
+            wrapper.className = "BirdNETmap";
+            wrapper.id = "BirdNET-map";
+            this.mapWrapper = wrapper;
+        }
         
         if (!this.loaded) {
             wrapper.innerHTML = this.translate('LOADING');
             wrapper.innerClassName = 'dimmed light small';
             return wrapper;
         } else { 
-            this.buildMap();
+            // this.buildMap();
         }
         
         return wrapper;
@@ -188,8 +226,13 @@ Module.register("MMM-BirdNET", {
             L.tileLayer(this.config.mapUrl, {maxZoom: 19, attribution: 'OpenStreetMap'}).addTo(map); // add map tiles
             this.birdMap = map;
         }
-        if (this.markersLayer == null) { this.markersLayer = L.layerGroup().addTo(this.birdMap);}
-        else { this.markersLayer.addTo(map)}
+
+        if (this.markersLayer == null) { 
+            Log.info("Creating markers layer.");
+            this.markersLayer = L.layerGroup().addTo(this.birdMap);
+        } else { 
+            this.markersLayer.addTo(this.birdMap);
+        }
     
     },
 
@@ -204,7 +247,6 @@ Module.register("MMM-BirdNET", {
     notificationReceived: function(notification, payload, sender) {
         switch(notification) {
             case "DOM_OBJECTS_CREATED":
-                Log.log("let's go");
                 this.loaded = true;
                 this.buildMap();
                 this.updateData();
