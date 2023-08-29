@@ -9,7 +9,9 @@ Module.register("MMM-BirdNET", {
 		lon: -76.47363144,
         width: '400px',
         height: '400px',
-        zoomLevel: 7
+        zoomLevel: 7,
+        markerDistance: 300,
+        markerColor: 'LightGreen' // distance from map center to put markers
     },
   
     start: function () {
@@ -26,6 +28,7 @@ Module.register("MMM-BirdNET", {
         this.birdData = {};
         this.birdMap = null;
         this.markersLayer = new L.layerGroup();
+        this.locations = [];
 
         this.popupOptions = {
             closeButton: false,
@@ -111,6 +114,9 @@ Module.register("MMM-BirdNET", {
         
         this.birdData = JSON.parse(birdData);
         var markers = this.markersLayer;
+        this.locations = [];
+        var skipped = 0;
+        var markerRadius = this.birdMap.getZoom() - 2;
         markers.clearLayers(); // clear markers ahead of data load
 
         var observations = this.birdData.observations;
@@ -119,7 +125,14 @@ Module.register("MMM-BirdNET", {
             var lat = entry.lat;
             var lon = entry.lon;
             var dist = this.getDistance(this.config.lat,this.config.lon, lat, lon); 
-            if (dist < 300) { // remove entries further than 300 km
+            if (dist < this.config.markerDistance) { // remove entries further than 300 km
+                // ensure only one marker per lat/lon to nearest 10th.
+                var loc_code = ((lat * 5).toFixed(0) / 5) + ";" + ((lon * 5).toFixed(0) / 5); 
+                if (this.locations.includes(loc_code)) {
+                    skipped++;
+                    continue;
+                } else (this.locations.push(loc_code));
+
                 // split species into common & Latin
                 var species_split = entry.species.split(";");
                 var name = species_split[0];
@@ -127,13 +140,20 @@ Module.register("MMM-BirdNET", {
                 var percent = entry.score;
                 var ts = entry.ts;
             
-                var marker = L.marker([lat, lon]);
+                // var marker = L.marker([lat, lon]); 
+                var circle = L.circleMarker([lat,lon], {
+                    stroke: false,
+                    fill: true,
+                    fillColor: this.config.markerColor,
+                    radius: markerRadius,
+                    fillOpacity: 1
+                });
                 var popup = this.createPopup(name, species, percent, ts);
-                marker.bindPopup(popup, this.popupOptions);
-                markers.addLayer(marker);
-            }
+                circle.bindPopup(popup, this.popupOptions);
+                markers.addLayer(circle);
+            } else { skipped++;}
         }
-        this.schedulePopInterval();
+        Log.info("Processed " + observations.length + " bird hits. (skipped " + skipped +")");
     },
 
     createPopup: function(name, species, percent, ts) {
@@ -256,6 +276,7 @@ Module.register("MMM-BirdNET", {
                 this.loaded = true;
                 this.buildMap();
                 this.updateData();
+                this.schedulePopInterval();
         }
     },
 
