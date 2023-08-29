@@ -32,7 +32,7 @@ Module.register("MMM-BirdNET", {
 
         this.popupOptions = {
             closeButton: false,
-            closeOnClick: true
+            closeOnClick: true,
         };
         this.mapOptions = {
             zoomControl: false,
@@ -158,7 +158,7 @@ Module.register("MMM-BirdNET", {
 
     createPopup: function(name, species, percent, ts) {
         var wrapper = document.createElement("div");
-        wrapper.className = "BirdNET-popUp";
+        wrapper.className = "popup";
         wrapper.id = "BirdNET-popup-" + ts;
 
         var labelEntry = labeldata[species + "_" + name];
@@ -167,29 +167,37 @@ Module.register("MMM-BirdNET", {
             imageSource = encodeURIComponent(labelEntry.icon);
         }
 
+        var table = document.createElement("table");
+        var tr = document.createElement("tr");
+        var tdI = document.createElement("td");
+        var tdT = document.createElement("td");
+        
         var image = document.createElement("img");
-        image.className = "rounded mr-3";
+        image.className = "popup-image";
         image.setAttribute("width", "75px");
         image.setAttribute("height", "75px");
         image.setAttribute("src", this.imageUrl + imageSource);
-        wrapper.appendChild(image);
+        tdI.append(image);
+  
+        // var stack = document.createElement("div");
+        var nameLabel = document.createElement("div");
+        nameLabel.className = "name-label"
+        nameLabel.innerHTML = name
+        var specLabel = document.createElement("div");
+        specLabel.className = "species-label";
+        specLabel.innerHTML = species;
+        var ciLabel = document.createElement("div");
+        ciLabel.className = "confidence";
+        ciLabel.innerHTML = "Confidence: " + (Number(percent) * 100).toFixed(2) + "%";
 
-        var bodyWrapper = document.createElement("div");
-        bodyWrapper.className = "media-body";
-        wrapper.appendChild(bodyWrapper);
+        tdT.append(nameLabel);
+        tdT.append(specLabel);
+        tdT.append(ciLabel);
 
-        var nameLabel = document.createElement("h6");
-        nameLabel.innerHTML = name + "<br>";
-        bodyWrapper.appendChild(nameLabel);
-
-        var speciesLabel = document.createElement("small");
-        speciesLabel.className = "text-muted";
-        speciesLabel.innerHTML = species + "<br>";
-        nameLabel.appendChild(speciesLabel);
-
-        var scoreLabel = document.createElement("small");
-        scoreLabel.innerHTML = "Confidence: " + (Number(percent) * 100).toFixed(2) + "%";
-        nameLabel.appendChild(scoreLabel);
+        tr.appendChild(tdI);
+        tr.appendChild(tdT);
+        table.appendChild(tr);
+        wrapper.append(table);
 
         return wrapper;
     },

@@ -3,3 +3,34 @@
     height: 500px; 
     border-radius: 10px;
 }
+
+.popup {
+    height: 85px;
+    width: auto;
+    padding: 0px 0px 0px 0px;
+}
+
+table, tr, th, td {
+    /* border: 1px solid; */
+}
+
+.popup-image {
+    border-radius: 4px;
+    padding: 3px;
+}
+
+.name-label {
+    font-size: 16px;
+}
+
+.species-label {
+    font-size: 14px;
+}
+
+.confidence { 
+    font-size: 12px;
+}
+
+.leaflet-popup-content {
+    margin: 3px 3px;
+}
