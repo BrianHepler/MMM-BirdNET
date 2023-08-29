@@ -43,7 +43,7 @@ All configuration options are optional. There are no mandatory parameters.
 | mapUrl | null | If you set the mapMode parameter to `custom`, this parameter will activate. You can supply your own [Leaflet](https://leafletjs.com/reference.html#map-example)-supported map URL here. |
 | dataUrl | https://birdnet.cornell.edu/map/requeststats| Where to pull the data |
 
-Note: Width & height of the map are controlled via the `BirdNETmap` classname. Override via your `custom.css`. Default is 400px x 400px.
+Note: Width & height of the map are controlled via the `BirdNETmap` classname. Override via your `custom.css`. Default is 400px x 400px. See the `MMM-BirdNET.css` file for examples.
 
 ## Upcoming Features
 * Better CSS for the popups.
