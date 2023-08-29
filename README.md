@@ -37,13 +37,13 @@ All configuration options are optional. There are no mandatory parameters.
 | mapMode | 'dark' | Which map to use. Supported values are: `dark`, `light`, `atlas`, `stark`, `terrain`, `satellite`, `custom` and `metal`.
 | lat | 42.453583743 | Latitude for the center of the map display. |
 | lon | -76.47363144 | Longitude for the center of the map display. |
-| width | 400px | Width of the map box. |
-| height | 400px | Height of the map box |
 | markerColor | 'LightGreen' | Sets the color of the markers on the map representing submissions. Accepts [HTML standard color names](https://www.w3schools.com/cssref/css_colors.php) or hex format.|
 | markerDistance | 300 | Distance in kilometers from the center of the map to display BirdNET submissions. If you encounter performance issues, try reducing this number. BirdNET regularly receives 30-50K submissions daily and we can _maybe_ display 10K. |
 | zoomLevel | 7 | How far in the map is zoomed. See [Leaflet](https://leafletjs.com/examples/zoom-levels/) documentation for more details. |
 | mapUrl | null | If you set the mapMode parameter to `custom`, this parameter will activate. You can supply your own [Leaflet](https://leafletjs.com/reference.html#map-example)-supported map URL here. |
 | dataUrl | https://birdnet.cornell.edu/map/requeststats| Where to pull the data |
+
+Note: Width & height of the map are controlled via the `BirdNETmap` classname. Override via your `custom.css`. Default is 400px x 400px.
 
 ## Upcoming Features
 * Better CSS for the popups.
