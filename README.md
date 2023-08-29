@@ -8,7 +8,7 @@ This is a module for the [MagicMirror<sup>2</sup>](https://github.com/MichMich/M
 * Displays the name, species, photo, and confidence of a random submission via popup
 * Several included map options
 * Custom map option available
-* Configurable speed of popups
+* Configurable speed of popups, marker color
 
 ## Dependencies
 * An installation of MagicMirror<sup>2</sup>
@@ -48,6 +48,7 @@ All configuration options are optional. There are no mandatory parameters.
 ## Upcoming Features
 * Better CSS for the popups.
 * Enable notification broadcasts
+* Translations for common names of birds
 
 ## Version History
 ### v0.1.1
