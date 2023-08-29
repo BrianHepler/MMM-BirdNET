@@ -7,8 +7,6 @@ Module.register("MMM-BirdNET", {
         mapMode: 'dark',
         lat: 42.453583743,
 		lon: -76.47363144,
-        width: '400px',
-        height: '400px',
         zoomLevel: 7,
         markerDistance: 300,
         markerColor: 'LightGreen' // distance from map center to put markers
@@ -37,8 +35,10 @@ Module.register("MMM-BirdNET", {
         this.mapOptions = {
             zoomControl: false,
             boxZoom: false,
-            doubleClickZoom: false
-        }
+            doubleClickZoom: false,
+            attributionControl: false
+        };
+        
 
         this.mapSelector = "Jawg.Dark";
         
@@ -70,6 +70,8 @@ Module.register("MMM-BirdNET", {
             wrapper = document.createElement("div");
             wrapper.className = "BirdNETmap";
             wrapper.id = "BirdNET-map";
+            wrapper.width = this.config.width;
+            wrapper.height = this.config.height;
             this.mapWrapper = wrapper;
         }
         
@@ -257,7 +259,7 @@ Module.register("MMM-BirdNET", {
                 case 'custom':
                     L.tileLayer(this.config.mapUrl, {maxZoom: 19, attribution: 'Unknown'}).addTo(map); // add map tiles
             } // end case statement
-
+            L.control.attribution(this.attributionOptions);
             this.birdMap = map;
         }
 
