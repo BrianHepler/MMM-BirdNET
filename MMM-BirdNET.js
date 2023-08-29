@@ -2,14 +2,14 @@ Module.register("MMM-BirdNET", {
     defaults: {
         updateInterval: 60 * 60 * 1000, // one hour
         popInterval: 30 * 1000, // thirty seconds
-        dataUrl: 'https://birdnet.cornell.edu/map/requeststats',
-        mapUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        mapMode: 'dark',
-        lat: 42.453583743,
-		lon: -76.47363144,
-        zoomLevel: 7,
-        markerDistance: 300,
-        markerColor: 'LightGreen' // distance from map center to put markers
+        dataUrl: 'https://birdnet.cornell.edu/map/requeststats', // where to pull data
+        mapUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // where to pull map tiles
+        mapMode: 'dark', // map tile appearance
+        lat: 42.453583743, // latitude
+		lon: -76.47363144, // longitude
+        zoomLevel: 7, // Zoom level of map
+        markerDistance: 300, // maximum distance from map center to plot markers
+        markerColor: 'LightGreen' // color of plotted BirdNET submissions
     },
   
     start: function () {
@@ -38,28 +38,19 @@ Module.register("MMM-BirdNET", {
             doubleClickZoom: false,
             attributionControl: false
         };
-        
-
-        this.mapSelector = "Jawg.Dark";
-        
-
-
-        if (this.config.mapMode == 'dark') { 
-        } else {
-
-        }
 
         this.loaded = false;
     },
 
     getHeader: function() { return this.name;},
 
-    suspend: function() { clearInterval(this.updateTimer);},
+    suspend: function() { clearInterval(this.updateTimer); clearInterval(this.updateTimer);},
 
     resume: function() { 
         this.updateTimer = setInterval(()=> {
             this.updateData();
         }, this.config.updateInterval);
+        this.schedulePopInterval();
     },
 
     getDom: function() {
@@ -94,16 +85,12 @@ Module.register("MMM-BirdNET", {
         var dataRequest = new XMLHttpRequest();
         dataRequest.open("GET", url, true);
         dataRequest.send();
-        // dataRequest.onprogress = function(event) {
-        //     Log.info("Downloading bird data: " + event.total);
-        // }
         dataRequest.onerror = function() {
             Log.error("Unable to download bird data");
             this.birdData = {};
         }
         dataRequest.onload = function() {
-            Log.info(self.name + " - Bird observation data loaded.");
-            // remove markers
+            // Log.info(self.name + " - Bird observation data loaded.");
             if (dataRequest.status >= 200 && dataRequest.status < 300) {
                 self.processBirdData(dataRequest.responseText);
             }
@@ -229,7 +216,7 @@ Module.register("MMM-BirdNET", {
 
     buildMap: function() {
         if (this.birdMap != null) {
-            Log.info("map already exists");
+            // Log.info("map already exists");
         } else {
             var map = L.map('BirdNET-map', this.mapOptions);
             map.setView([this.config.lat, this.config.lon],this.config.zoomLevel); // create the map
@@ -257,14 +244,13 @@ Module.register("MMM-BirdNET", {
                     L.tileLayer.provider('USGS.USImageryTopo',{maxZoom: 19}).addTo(map);
                     break;
                 case 'custom':
-                    L.tileLayer(this.config.mapUrl, {maxZoom: 19, attribution: 'Unknown'}).addTo(map); // add map tiles
+                    L.tileLayer(this.config.mapUrl, {maxZoom: 19, attribution: 'Unknown'}).addTo(map); 
             } // end case statement
             L.control.attribution(this.attributionOptions);
             this.birdMap = map;
         }
 
         if (this.markersLayer == null) { 
-            Log.info("Creating markers layer.");
             this.markersLayer = L.layerGroup().addTo(this.birdMap);
         } else { 
             this.markersLayer.addTo(this.birdMap);
