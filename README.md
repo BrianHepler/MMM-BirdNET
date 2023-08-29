@@ -49,6 +49,18 @@ All configuration options are optional. There are no mandatory parameters.
 * Better CSS for the popups.
 * Enable notification broadcasts
 
+## Version History
+### v0.1.1
+* Fixed issue with popups double-tapping after an hour
+* Fixed issue with displaying submissions in exceptionally high-density areas
+* Submission markers are now dots instead of map markers
+* Can set marker color with `markerColor` parameter
+* Can set distance limit on which markers are displayed with `markerDistance` parameter
+
+### v0.1.0
+* Initial release
+
+
 ## Thanks To
 * [thgmirror](https://forum.magicmirror.builders/user/thgmirror) over at the MagicMirror Forum for the inspiration.
 * [cyberdie](https://forum.magicmirror.builders/user/cyberdie) for the idea about the bird images.
