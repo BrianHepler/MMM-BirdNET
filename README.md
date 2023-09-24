@@ -4,7 +4,7 @@ This is a module for the [MagicMirror<sup>2</sup>](https://github.com/MichMich/M
 ![MMM-BirdNET interface](display.png)
 
 ## Features
-* Plots the uses of BirdNET mobile app in the nearby area
+* Plots the uses of BirdNET service in the nearby area
 * Displays the name, species, photo, and confidence of a random submission via popup
 * Several included map options
 * Custom map option available
@@ -34,6 +34,7 @@ All configuration options are optional. There are no mandatory parameters.
 |:------:| ------- | ----------- |
 | updateInterval | 3600000 (one hour) | How often the BirdNET data is pulled from the website.|
 | popInterval | 30000 (30 seconds)| How often the popup switches to a new entry |
+| popDelay | 0 (off) | How long (in milliseconds) between the closing of one popup and the opening of the next |
 | mapMode | 'dark' | Which map to use. Supported values are: `dark`, `light`, `atlas`, `stark`, `terrain`, `satellite`, `custom` and `metal`.
 | lat | 42.453583743 | Latitude for the center of the map display. |
 | lon | -76.47363144 | Longitude for the center of the map display. |
@@ -51,6 +52,9 @@ Note: Width & height of the map are controlled via the `BirdNETmap` classname. O
 * Translations for common names of birds
 
 ## Version History
+### v0.1.2
+* Added the ability to pan back to origin coords between popups. Controlled by `popDelay` parameter.
+
 ### v0.1.1
 * Fixed issue with popups double-tapping after an hour
 * Fixed issue with displaying submissions in exceptionally high-density areas

@@ -2,6 +2,7 @@ Module.register("MMM-BirdNET", {
     defaults: {
         updateInterval: 60 * 60 * 1000, // one hour
         popInterval: 30 * 1000, // thirty seconds
+        popDelay: 0, // Off
         dataUrl: 'https://birdnet.cornell.edu/map/requeststats', // where to pull data
         mapUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // where to pull map tiles
         mapMode: 'dark', // map tile appearance
@@ -26,6 +27,9 @@ Module.register("MMM-BirdNET", {
         this.birdData = {};
         this.birdMap = null;
         this.markersLayer = new L.layerGroup();
+        this.popupIndex = -1;
+        this.popTimer = null;
+        this.resetTime = null;
         this.locations = [];
 
         this.popupOptions = {
@@ -44,7 +48,7 @@ Module.register("MMM-BirdNET", {
 
     getHeader: function() { return this.name;},
 
-    suspend: function() { clearInterval(this.updateTimer); clearInterval(this.updateTimer);},
+    suspend: function() { clearInterval(this.updateTimer); clearInterval(this.updateTimer); clearInterval(this.resetTimer)},
 
     resume: function() { 
         this.updateTimer = setInterval(()=> {
@@ -78,7 +82,7 @@ Module.register("MMM-BirdNET", {
     },
 
     updateData: function() {
-        Log.info("Downloading bird hit data.");
+        Log.info(this.name + " - Downloading bird hit data.");
         var self = this;
         var url = this.config.dataUrl;
 
@@ -99,7 +103,7 @@ Module.register("MMM-BirdNET", {
     },
 
     processBirdData: function(birdData) {
-        Log.info("Processing bird hits");
+        // Log.info(this.name + " - Processing bird hits");
         
         this.birdData = JSON.parse(birdData);
         var markers = this.markersLayer;
@@ -142,7 +146,7 @@ Module.register("MMM-BirdNET", {
                 markers.addLayer(circle);
             } else { skipped++;}
         }
-        Log.info("Processed " + observations.length + " bird hits. (skipped " + skipped +")");
+        Log.info(this.name + "- Processed " + observations.length + " bird hits. (skipped " + skipped +")");
     },
 
     createPopup: function(name, species, percent, ts) {
@@ -192,26 +196,39 @@ Module.register("MMM-BirdNET", {
     },
 
     randomPopup: function() {
+        // Log.info(this.name + " - Pop goes the birdie and the birdie goes pop.");
         var markers = this.markersLayer;
         var markerArray = markers.getLayers();
+        if (this.resetTimer != null) clearInterval(this.resetTimer);
+        
         var index = Math.floor(Math.random() * markerArray.length);
-
+        this.popupIndex = index;
         markerArray[index].openPopup();
+
+        // implement pan to origin & delay between popups (if configured)
+        if (this.config.popDelay > 0) {
+            this.resetTimer = setInterval(()=> {
+                if (markerArray[this.popupIndex] != null) {markerArray[this.popupIndex].closePopup()};
+                this.birdMap.flyTo([this.config.lat, this.config.lon]);
+            }, this.config.popInterval);
+        }
     },
 
     /**
-	 * Schedule popups
+	 * Schedule popups & delay between popups.
 	 */
 	schedulePopInterval: function () {
 		this.updateDom(this.config.animationSpeed);
+        var markerArray = this.markersLayer.getLayers();
 
-		// #2638 Clear timer if it already exists
-		if (this.popTimer != null) clearInterval(this.timer);
+		// Clear timers if they already exist
+		if (this.popTimer != null) clearInterval(this.popTimer);
+        if (this.resetTimer != null) clearInterval(this.resetTimer);
 
+        // implement popup with optional delay
 		this.timer = setInterval(() => {
-			this.activeBird++;
 			this.randomPopup();
-		}, this.config.popInterval);
+		}, this.config.popInterval + this.config.popDelay);
 	},
 
     buildMap: function() {
