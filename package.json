@@ -1,6 +1,6 @@
 {
     "name": "mmm-birdnet",
-    "version": "1.1",
+    "version": "1.1.0",
     "description": "A display of local hits for the BirdNET mobile app. https://birdnet.cornell.edu",
     "main": "MMM-BirdNET.js",
     "repository": {
