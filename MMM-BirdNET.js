@@ -96,6 +96,7 @@ Module.register("MMM-BirdNET", {
         dataRequest.onload = function() {
             // Log.info(self.name + " - Bird observation data loaded.");
             if (dataRequest.status >= 200 && dataRequest.status < 300) {
+                self.sendNotification("BIRDNET_UPDATED_DATA", {});
                 self.processBirdData(dataRequest.responseText);
             }
         }
@@ -204,6 +205,7 @@ Module.register("MMM-BirdNET", {
         var index = Math.floor(Math.random() * markerArray.length);
         this.popupIndex = index;
         markerArray[index].openPopup();
+        this.sendNotification("BIRDNET_POPUP", {});
 
         // implement pan to origin & delay between popups (if configured)
         if (this.config.popDelay > 0) {
@@ -290,6 +292,10 @@ Module.register("MMM-BirdNET", {
                 this.buildMap();
                 this.updateData();
                 this.schedulePopInterval();
+                break;
+            case "BIRDNET_UPDATE_NOW":
+                this.updateData();
+                break;
         }
     },
 
