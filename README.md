@@ -46,8 +46,12 @@ All configuration options are optional. There are no mandatory parameters.
 
 Note: Width & height of the map are controlled via the `BirdNETmap` classname. Override via your `custom.css`. Default is 400px x 400px. See the `MMM-BirdNET.css` file for examples.
 
+## Notifications
+MMM-BirdNET broadcasts two notifications. When the data is loaded from Cornell University, it broadcasts `BIRDNET_UPDATED_DATA`. And when a new popup is displayed, it broadcasts `BIRDNET_POPUP`. Both notifications contain an empty payload.
+
+MMM-BirdNET accepts the following notification to force a reload of the data from Cornell: `BIRDNET_UPDATE_NOW`
+
 ## Upcoming Features
-* Enable notification broadcasts
 * Translations for common names of birds
 
 ## Version History

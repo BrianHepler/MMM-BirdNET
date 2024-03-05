@@ -12,5 +12,12 @@
     "bugs": {
       "url": "https://github.com/BrianHepler/MMM-BirdNET/issues"
     },
+    "keywords": [
+      "MagicMirror",
+      "BirdNET",
+      "birds",
+      "Cornell University",
+      "educational"
+      ],
     "homepage": "https://github.com/BrianHepler/MMM-BirdNET#readme"
   }
